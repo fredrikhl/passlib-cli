@@ -12,7 +12,7 @@ from pkg_resources import get_distribution, DistributionNotFound
 
 
 try:
-    __version__ = get_distribution('mkcrypt').version
+    __version__ = get_distribution('passlib-crypt').version
 except DistributionNotFound:
     __version__ = None
 
