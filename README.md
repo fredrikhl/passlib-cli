@@ -19,10 +19,10 @@ cryptstring, e.g.
 pip install passlib
 pip install <this-repo>
 
-# Not required, but you should also
-pip install scrypt  # Recommended
-pip install bcrypt  # Recommended
-# if you plan on using those backends
+# Not required, but you should also…
+pip install scrypt
+pip install bcrypt
+# … if you plan on using those backends
 ```
 
 
@@ -47,5 +47,5 @@ optional arguments:
   --no-verify           do not ask to verify password
 ```
 
- [passlib]: https://example.org/#TODO
- [getpass]: https://example.org/#TODO
+ [passlib]: https://passlib.readthedocs.io/en/stable/
+ [getpass]: https://docs.python.org/3/library/getpass.html
