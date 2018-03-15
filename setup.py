@@ -32,6 +32,7 @@ def run_setup():
         description='Make cryptstrings with passlib.',
         long_description=get_textfile('README.md'),
         author='fredrikhl',
+        license='MIT',
         url='https://github.com/fredrikhl/passlib-crypt',
         use_scm_version=True,
         setup_requires=['setuptools_scm'],
