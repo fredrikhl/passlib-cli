@@ -7,7 +7,7 @@ import logging
 import getpass
 import sys
 from itertools import tee as iter_tee
-from mkcrypt import methods, parse_parameter, __version__
+from . import methods, parse_parameter, __version__
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def output_columns(method_iterator):
                          for idx, value in enumerate(items))
 
     print(row([c[0] for c in columns]))
-    print(row(['-' * l for l in c_length]))
+    print(row(['-' * cl for cl in c_length]))
     for m in method_iterator:
         print(row([c[1](m) for c in columns]))
 

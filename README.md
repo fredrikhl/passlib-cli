@@ -1,4 +1,9 @@
-# mkcrypt
+# passlib-cli
+
+CLI-utils for passlib.
+
+
+## mkcrypt
 
 Command line utility to make cryptstrings using [passlib].
 

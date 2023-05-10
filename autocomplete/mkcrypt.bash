@@ -1,12 +1,15 @@
 function _mkcrypt_autocomplete {
     local methods curr
     local -a opts
-    methods="$(mkcrypt -l)"
+    methods="$(passlib-mkpasswd --list-methods)"
     curr="${COMP_WORDS[$COMP_CWORD]}"
 
     # TODO: Implement some way of fetching these from mkcrypt
-    opts=("-h" "--help" "-v" "--version" "-l" "--list" "--list-all" "--doc" \
-          "-p" "-s" "--show-plaintext" "--no-verify")
+    opts=("-h" "--help" "-v" "--verbose" "--version" \
+          "--list-methods" "--list-params" "--list-all" \
+          "--show-params" "--show-docstring" \
+          "-p" "--param" \
+          "-s" "--show-plaintext" "--no-verify")
 
     COMPREPLY=()
 
@@ -22,4 +25,4 @@ function _mkcrypt_autocomplete {
     fi
 }
 
-complete -F _mkcrypt_autocomplete mkcrypt
+complete -F _mkcrypt_autocomplete passlib-mkpasswd
