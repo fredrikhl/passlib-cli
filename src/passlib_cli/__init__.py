@@ -8,13 +8,11 @@ from distutils.version import LooseVersion
 from passlib.ifc import PasswordHash
 from passlib.registry import list_crypt_handlers, get_crypt_handler
 from passlib.utils.handlers import HasUserContext, PrefixWrapper
-from pkg_resources import get_distribution, DistributionNotFound
+
+from . import metadata
 
 
-try:
-    __version__ = get_distribution('passlib-crypt').version
-except DistributionNotFound:
-    __version__ = None
+__version__ = metadata.version
 
 
 # TODO: Validate and transform params against <method>.setting_kwds?

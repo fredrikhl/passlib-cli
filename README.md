@@ -1,27 +1,26 @@
 # passlib-cli
 
-CLI-utils for passlib.
+CLI-utils to simplify access to passlib crypt methods. It is glued together
+with twigs and scotch tape.
 
 
-## mkcrypt
+## passlib-mkpasswd
 
-Command line utility to make cryptstrings using [passlib].
+Command line utility to make cryptstrings and password hashes using [passlib].
 
 ```bash
-python -m mkcrypt -p ident=2a bcrypt
+passlib-mkpasswd -p ident=2a bcrypt
+python -m passlib_cli -p ident=2a bcrypt
 ```
+
 This command will ask you to input a password using [getpass], and then output a
 cryptstring, e.g.
 ``$2a$12$VJ8.82W/yr9acK5.i5774Ovmvme6sEanXnfbf3JWYPfVegvX4kzR.``
-
-> This script is just an ugly wrapper that simplifies access to the hashlib
-> internals. It is glued together with twigs and scotch tape.
 
 
 ## Install
 
 ```bash
-pip install passlib
 pip install <this-repo>
 
 # Not required, but you should also…
@@ -34,7 +33,7 @@ pip install bcrypt
 ## Usage
 
 ```
-usage: python -m mkcrypt [-h] [-l | --list-all | --doc METHOD] [-p PARAM=VALUE]
+usage: passlib-mkpasswd [-h] [-l | --list-all | --doc METHOD] [-p PARAM=VALUE]
                          [-s] [--no-verify] [METHOD]
 
 positional arguments:
@@ -50,6 +49,39 @@ optional arguments:
                         available parameters.
   -s, --show-plaintext  write the plaintext password to stdout
   --no-verify           do not ask to verify password
+
+
+usage: passlib-mkpasswd [-h] [-v]
+                        [--version | --list-methods | --list-params |
+                         --list-all | --show-params METHOD |
+                         --show-docstring METHOD]
+                        [-p PARAM=VALUE] [-s] [--no-verify] [METHOD]
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         enable/increase output verbosity
+
+alternate actions:
+  Options that change the default behaviour of this script. Each option here
+  will cause the script to dump some info and exit.
+
+  --version             show program's version number and exit
+  --list-methods        list supported methods and exit
+  --list-params         list supported parameters and exit
+  --list-all            list all known methods and exit
+  --show-params METHOD  show supported parameters for METHOD and exit
+  --show-docstring METHOD
+                        show docstring for a given implementation and exit
+
+make crypt:
+  -p PARAM=VALUE, --param PARAM=VALUE
+                        set parameters, e.g.: `-p ident=2a` or `-p rounds=12`
+                        (use ['--list-params'] to see available)
+  -s, --show-plaintext  write the plaintext password to stdout
+  --no-verify           do not ask to verify password
+  METHOD                hash implementation (use --list-methods to see
+                        available)
+
 ```
 
  [passlib]: https://passlib.readthedocs.io/en/stable/

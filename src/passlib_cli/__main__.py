@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """ Make crypt strings using `passlib`. """
-from __future__ import absolute_import, print_function
+from __future__ import (
+    absolute_import,
+    print_function,
+)
+
 import argparse
+import itertools
 import logging
 import getpass
 import sys
-from itertools import tee as iter_tee
-from . import methods, parse_parameter, __version__
+import textwrap
+
+from . import methods, parse_parameter, metadata
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +65,7 @@ def output_columns(method_iterator):
     # calculate column lengths
     c_length = [0, ] * len(columns)
     for idx in range(len(columns)):
-        method_iterator, tmp_iter = iter_tee(method_iterator)
+        method_iterator, tmp_iter = itertools.tee(method_iterator)
         c_length[idx] = max(len(columns[idx][0]),
                             max(len(columns[idx][1](m)) for m in tmp_iter))
 
@@ -102,43 +108,54 @@ def make_parser(supported_methods=None):
         action="count",
         help="enable/increase output verbosity")
 
-    alt = parser.add_argument_group('alternate actions',
-                                    'Options that change the default '
-                                    'behaviour of this script. '
-                                    'Each option here will cause the script '
-                                    'to dump some info and exit')
+    alt = parser.add_argument_group(
+        'alternate actions',
+        textwrap.dedent(
+            """
+            Options that change the default behaviour of this script.  Each
+            option here will cause the script to dump some info and exit.
+            """
+        ).strip(),
+    )
     alt_actions = alt.add_mutually_exclusive_group()
     alt_actions.add_argument(
         '--version',
         action='version',
-        version=__version__)
+        version='%s %s' % (metadata.package, metadata.version),
+
+    )
     list_m = alt_actions.add_argument(
         '--list-methods',
         action='store_true',
         default=False,
-        help="list supported methods and exit")
+        help="list supported methods and exit",
+    )
     list_p = alt_actions.add_argument(
         '--list-params',
         action='store_true',
         default=False,
-        help="list supported parameters and exit")
+        help="list supported parameters and exit",
+    )
     alt_actions.add_argument(
         '--list-all',
         action='store_true',
         default=False,
-        help="list all known methods and exit")
+        help="list all known methods and exit",
+    )
     alt_actions.add_argument(
         '--show-params',
         choices=method_choices,
         metavar='METHOD',
         default=None,
-        help="show supported parameters for %(metavar)s and exit")
+        help="show supported parameters for %(metavar)s and exit",
+    )
     alt_actions.add_argument(
         '--show-docstring',
         choices=method_choices,
         metavar='METHOD',
         default=None,
-        help="show docstring for a given implementation and exit")
+        help="show docstring for a given implementation and exit",
+    )
 
     main = parser.add_argument_group('make crypt')
 
@@ -149,23 +166,29 @@ def make_parser(supported_methods=None):
         type=param_type,
         metavar=('PARAM=VALUE'),
         default=[],
-        help=("set parameters,"
-              " e.g.: `-p ident=2a` or `-p rounds=12`"
-              " (use {0} to see available)".format(list_p.option_strings)))
+        help=textwrap.dedent(
+            """
+            set parameters, e.g.: `-p ident=2a` or `-p rounds=12` (use {0}
+            to see available)
+            """
+        ).format(list_p.option_strings).strip(),
+    )
 
     main.add_argument(
         '-s', '--show-plaintext',
         dest='print_pass',
         action='store_true',
         default=False,
-        help="write the plaintext password to stdout")
+        help="write the plaintext password to stdout",
+    )
 
     main.add_argument(
         '--no-verify',
         dest='verify',
         action='store_false',
         default=True,
-        help="do not ask to verify password")
+        help="do not ask to verify password",
+    )
 
     main.add_argument(
         'crypt',
@@ -173,8 +196,17 @@ def make_parser(supported_methods=None):
         metavar='METHOD',
         nargs='?',
         default='scrypt',
-        help="hash implementation (use {0} to see"
-             " available)".format('|'.join(list_m.option_strings)))
+        help=textwrap.dedent(
+            """
+            hash implementation (use {0} to see available)
+            """
+        ).format('|'.join(list_m.option_strings)).strip(),
+    )
+
+    # # fix parser.prog if invoked with python -m
+    if parser.prog == '__main__.py':
+        parser.prog = 'python -m ' + __package__
+
     return parser
 
 
@@ -238,7 +270,9 @@ def main(inargs=None):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(format="%(levelname)s - %(name)s - %(message)s",
-                        level=verbosity_levels[0],
-                        stream=sys.stderr)
+    logging.basicConfig(
+        format="%(levelname)s - %(name)s - %(message)s",
+        level=verbosity_levels[0],
+        stream=sys.stderr,
+    )
     main()
