@@ -13,25 +13,10 @@ import getpass
 import sys
 import textwrap
 
-from . import methods, parse_parameter, metadata
+from . import methods, parse_parameter
+from . import cli_utils
 
 logger = logging.getLogger(__name__)
-
-verbosity_levels = [
-    logging.CRITICAL,
-    logging.ERROR,
-    logging.WARNING,
-    logging.INFO,
-    logging.DEBUG,
-]
-
-
-def set_verbosity(verbosity):
-    try:
-        level = verbosity_levels[verbosity]
-    except IndexError:
-        level = logging.DEBUG
-    logging.getLogger().setLevel(level)
 
 
 def get_password_loop(verify=True, allow_empty=False):
@@ -102,11 +87,11 @@ def make_parser(supported_methods=None):
     supported_methods = supported_methods or []
     method_choices = [m.name for m in supported_methods]
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-v", "--verbose",
-        action="count",
-        help="enable/increase output verbosity")
+    parser = argparse.ArgumentParser(
+        description="Make password hashes and cryptstrings using passlib",
+    )
+
+    cli_utils.add_verbosity_mutex(parser)
 
     alt = parser.add_argument_group(
         'alternate actions',
@@ -118,12 +103,7 @@ def make_parser(supported_methods=None):
         ).strip(),
     )
     alt_actions = alt.add_mutually_exclusive_group()
-    alt_actions.add_argument(
-        '--version',
-        action='version',
-        version='%s %s' % (metadata.package, metadata.version),
-
-    )
+    cli_utils.add_version_arg(alt_actions)
     list_m = alt_actions.add_argument(
         '--list-methods',
         action='store_true',
@@ -145,33 +125,41 @@ def make_parser(supported_methods=None):
     alt_actions.add_argument(
         '--show-params',
         choices=method_choices,
-        metavar='METHOD',
         default=None,
         help="show supported parameters for %(metavar)s and exit",
+        metavar='METHOD',
     )
     alt_actions.add_argument(
         '--show-docstring',
         choices=method_choices,
-        metavar='METHOD',
         default=None,
         help="show docstring for a given implementation and exit",
+        metavar='METHOD',
     )
 
-    main = parser.add_argument_group('make crypt')
+    main = parser.add_argument_group(
+        'default action',
+        textwrap.dedent(
+            """
+            The default behaviour is to ask for a password, and create a
+            hash/cryptstring using the given METHOD.
+            """
+        ).strip(),
+    )
 
     main.add_argument(
         '-p', '--param',
         dest='params',
         action='append',
         type=param_type,
-        metavar=('PARAM=VALUE'),
         default=[],
         help=textwrap.dedent(
             """
             set parameters, e.g.: `-p ident=2a` or `-p rounds=12` (use {0}
             to see available)
             """
-        ).format(list_p.option_strings).strip(),
+        ).format('|'.join(list_p.option_strings)).strip(),
+        metavar=('PARAM=VALUE'),
     )
 
     main.add_argument(
@@ -191,9 +179,8 @@ def make_parser(supported_methods=None):
     )
 
     main.add_argument(
-        'crypt',
+        'method',
         choices=method_choices,
-        metavar='METHOD',
         nargs='?',
         default='scrypt',
         help=textwrap.dedent(
@@ -201,12 +188,10 @@ def make_parser(supported_methods=None):
             hash implementation (use {0} to see available)
             """
         ).format('|'.join(list_m.option_strings)).strip(),
+        metavar="METHOD",
     )
-
-    # # fix parser.prog if invoked with python -m
-    if parser.prog == '__main__.py':
+    if parser.prog == "__main__":
         parser.prog = 'python -m ' + __package__
-
     return parser
 
 
@@ -215,10 +200,7 @@ def main(inargs=None):
     parser = make_parser(supported_methods=supported_methods)
     args = parser.parse_args(inargs)
 
-    if args.verbose:
-        set_verbosity(args.verbose)
-
-    logger.debug('args: {0}'.format(repr(args)))
+    cli_utils.setup_logging(args.verbosity)
 
     if args.list_methods:
         for m in supported_methods:
@@ -247,7 +229,7 @@ def main(inargs=None):
         raise SystemExit()
 
     params = dict(args.params)
-    method = methods[args.crypt]
+    method = methods[args.method]
 
     if method.require_user and 'user' not in params:
         raise ValueError(
@@ -270,9 +252,4 @@ def main(inargs=None):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        format="%(levelname)s - %(name)s - %(message)s",
-        level=verbosity_levels[0],
-        stream=sys.stderr,
-    )
     main()
