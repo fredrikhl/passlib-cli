@@ -1,0 +1,25 @@
+#!/usr/bin/env expect
+
+set timeout 10
+set password "hunter2"
+
+# if { [llength $argv] > 1 } {
+#    puts "Too many arguments"
+#    exit 1
+# }
+
+# if { [llength $argv] < 1 } {
+#    set method bcrypt
+# } else {
+#     set method [lindex $argv 0]
+# }
+
+# set arguments [lrange $argv 0 end]
+# spawn $program {*}$arguments
+
+spawn passlib-mkpasswd --no-verify {*}$argv
+
+expect "password:"
+send "$password\r"
+
+interact
