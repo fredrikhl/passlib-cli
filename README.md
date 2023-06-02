@@ -18,6 +18,25 @@ cryptstring, e.g.
 ``$2a$12$VJ8.82W/yr9acK5.i5774Ovmvme6sEanXnfbf3JWYPfVegvX4kzR.``
 
 
+## passlib-autocomplate
+
+Generates autocomplete script for *bash*:
+
+```bash
+source <(passlib-autocomplete)
+```
+
+
+## passlib-totp
+
+Generates one time passwords from a TOTP shared secret, or an `otpauth://` uri:
+
+```bash
+echo ABCDEFGHIJ234567 | passlib-totp
+echo otpauth://totp/example.org:user@example.org?secret=ABCDEFGHIJ234567 | passlib-totp
+```
+
+
 ## Install
 
 ```bash
