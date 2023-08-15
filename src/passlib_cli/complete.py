@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # encoding: utf-8
-""" Get autocomplete script """
+"""
+Autocomplete utils.
+"""
 from __future__ import (
     absolute_import,
     division,
     print_function,
     unicode_literals,
 )
-
 import argparse
 import logging
 import shlex
-# import textwrap
 
 from . import methods
 from . import cli_utils

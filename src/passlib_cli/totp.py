@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """ TOTP CLI utils. """
-
 from __future__ import (
     absolute_import,
     division,
     print_function,
-    unicode_literals
+    unicode_literals,
 )
-
 import argparse
 import logging
 import string
@@ -64,10 +62,6 @@ cli_utils.add_verbosity_mutex(parser)
 
 
 def main(inargs=None):
-    # print(__name__)
-    # print(__package__)
-    # print(__file__)
-    # print(os.path.basename(__file__))
     args = parser.parse_args(inargs)
     cli_utils.setup_logging(args.verbosity)
 

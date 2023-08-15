@@ -3,13 +3,14 @@
 """ Make crypt strings using `passlib`. """
 from __future__ import (
     absolute_import,
+    division,
     print_function,
+    unicode_literals,
 )
-
 import argparse
+import getpass
 import itertools
 import logging
-import getpass
 import sys
 import textwrap
 

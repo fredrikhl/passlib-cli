@@ -1,10 +1,15 @@
 # encoding: utf-8
 """ A basic API that abstracts passlib.hash to my likings. """
-from __future__ import absolute_import, print_function
-
-import passlib
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals,
+)
 from collections import OrderedDict
 from distutils.version import LooseVersion
+
+import passlib
 from passlib.ifc import PasswordHash
 from passlib.registry import list_crypt_handlers, get_crypt_handler
 from passlib.utils.handlers import HasUserContext, PrefixWrapper
@@ -13,17 +18,6 @@ from . import metadata
 
 
 __version__ = metadata.version
-
-
-# TODO: Validate and transform params against <method>.setting_kwds?
-
-# 'salt'
-#   TODO: str?
-# 'truncate_error'
-#   TODO: How do we handle this?
-
-# TODO: Also, 'user' if require_user? Are there other params not in
-#       setting_kwds?
 
 
 # Use the 'hash' or the 'encrypt' method of passlib.ifc.PasswordHash?
