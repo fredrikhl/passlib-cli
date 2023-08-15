@@ -14,17 +14,10 @@ import logging
 import sys
 import textwrap
 
-from . import methods, parse_parameter
 from . import cli_utils
+from . import methods
 
 logger = logging.getLogger(__name__)
-
-
-def get_method(name):
-    logger.debug("looking up method from name=%s", repr(name))
-    m = methods[name]
-    logger.debug("found method name=%s, method=%s", m.name, repr(m.method))
-    return m
 
 
 def get_password_loop(verify=True, allow_empty=False):
@@ -84,7 +77,7 @@ def param_type(raw_value):
 
     # Parse param values:
     try:
-        value = parse_parameter(param, value)
+        value = methods.parse_parameter(param, value)
     except ValueError as e:
         raise argparse.ArgumentTypeError(
             "{0}, {1}".format(param, e))
@@ -204,7 +197,7 @@ def make_parser(supported_methods=None):
 
 
 def main(inargs=None):
-    supported_methods = [m for m in methods.values() if m.supported]
+    supported_methods = list(methods.iter_supported_methods())
     parser = make_parser(supported_methods=supported_methods)
     args = parser.parse_args(inargs)
 
@@ -225,19 +218,19 @@ def main(inargs=None):
 
     if args.list_all:
         logger.debug("listing all known methods")
-        output_columns(iter(methods.values()))
+        output_columns(methods.iter_all_methods())
         raise SystemExit()
 
     if args.show_params:
         logger.debug("showing params for %s", repr(args.show_params))
-        m = get_method(args.show_params)
+        m = methods.get_method(args.show_params)
         for param in sorted(m.settings):
             print(param)
         raise SystemExit()
 
     if args.show_docstring:
         logger.debug("showing docstring for %s", repr(args.show_docstring))
-        m = get_method(args.show_docstring)
+        m = methods.get_method(args.show_docstring)
         try:
             help(m.method)
         except Exception:
@@ -247,7 +240,7 @@ def main(inargs=None):
 
     logger.debug("generate using %s", repr(args.method))
     params = dict(args.params)
-    method = get_method(args.method)
+    method = methods.get_method(args.method)
 
     if method.require_user and 'user' not in params:
         raise ValueError(

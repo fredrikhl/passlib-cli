@@ -13,8 +13,8 @@ import argparse
 import logging
 import shlex
 
-from . import methods
 from . import cli_utils
+from . import methods
 
 logger = logging.getLogger(__name__)
 
@@ -85,12 +85,7 @@ def main(inargs=None):
 
     cli_utils.setup_logging(args.verbosity)
 
-    supported_methods = [m for m in methods.values() if m.supported]
-    method_list = [m.name for m in supported_methods]
-
-    # m = methods[args.show_params]
-    # for param in sorted(m.settings):
-    #     print(param)
+    method_list = [m.name for m in methods.iter_supported_methods()]
 
     script = format_autocomplete_script(method_list)
     print(script)
