@@ -16,6 +16,7 @@ import textwrap
 
 from . import cli_utils
 from . import methods
+from . import params
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +78,7 @@ def param_type(raw_value):
 
     # Parse param values:
     try:
-        value = methods.parse_parameter(param, value)
+        value = params.parse_parameter(param, value)
     except ValueError as e:
         raise argparse.ArgumentTypeError(
             "{0}, {1}".format(param, e))
