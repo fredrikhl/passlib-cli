@@ -52,55 +52,57 @@ pip install bcrypt
 ## Usage
 
 ```
-usage: passlib-mkpasswd [-h] [-l | --list-all | --doc METHOD] [-p PARAM=VALUE]
-                         [-s] [--no-verify] [METHOD]
-
-positional arguments:
-  METHOD                hash implementation (use -l|--list to see available)
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -l, --list            list supported methods and exit
-  --list-all            list all known methods and exit
-  --doc METHOD          show docstring for a given implementation and exit
-  -p PARAM=VALUE        set parameters, e.g.: `-p ident=2a` or `-p rounds=12`
-                        Using `--doc METHOD' will usually give some details on
-                        available parameters.
-  -s, --show-plaintext  write the plaintext password to stdout
-  --no-verify           do not ask to verify password
-
-
-usage: passlib-mkpasswd [-h] [-v]
+usage: passlib-mkpasswd [-h] [-v | -q]
                         [--version | --list-methods | --list-params |
                          --list-all | --show-params METHOD |
                          --show-docstring METHOD]
-                        [-p PARAM=VALUE] [-s] [--no-verify] [METHOD]
+                         [-p PARAM=VALUE] [-s] [--no-verify] [METHOD]
+
+Make password hashes and cryptstrings using passlib
 
 options:
   -h, --help            show this help message and exit
-  -v, --verbose         enable/increase output verbosity
+  -v                    increase verbosity (debug output/logging)
+  -q                    silent mode - disables logging/debug output
 
 alternate actions:
   Options that change the default behaviour of this script. Each option here
   will cause the script to dump some info and exit.
 
-  --version             show program's version number and exit
-  --list-methods        list supported methods and exit
-  --list-params         list supported parameters and exit
-  --list-all            list all known methods and exit
-  --show-params METHOD  show supported parameters for METHOD and exit
+  --version
+      show program's version number and exit
+
+  --list-methods
+      list supported methods and exit
+
+  --list-params
+      list supported parameters and exit
+
+  --list-all
+      list all known methods and exit
+
+  --show-params METHOD
+      show supported parameters for METHOD and exit
+
   --show-docstring METHOD
-                        show docstring for a given implementation and exit
+      show docstring for a given implementation and exit
 
-make crypt:
+default action:
+  The default behaviour is to ask for a password, and create a hash/cryptstring
+  using the given METHOD.
+
   -p PARAM=VALUE, --param PARAM=VALUE
-                        set parameters, e.g.: `-p ident=2a` or `-p rounds=12`
-                        (use ['--list-params'] to see available)
-  -s, --show-plaintext  write the plaintext password to stdout
-  --no-verify           do not ask to verify password
-  METHOD                hash implementation (use --list-methods to see
-                        available)
+      set parameters, e.g.: `-p ident=2a` or `-p rounds=12` (use --list-params
+      to see available)
 
+  -s, --show-plaintext
+      write the plaintext password to stdout
+
+  --no-verify
+      do not ask to verify password
+
+  METHOD
+      hash implementation (use --list-methods to see available)
 ```
 
  [passlib]: https://passlib.readthedocs.io/en/stable/
