@@ -10,7 +10,6 @@ Command line utility to make cryptstrings and password hashes using [passlib].
 
 ```bash
 passlib-mkpasswd -p ident=2a bcrypt
-python -m passlib_cli -p ident=2a bcrypt
 ```
 
 This command will ask you to input a password using [getpass], and then output a
