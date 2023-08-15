@@ -19,6 +19,13 @@ from . import cli_utils
 logger = logging.getLogger(__name__)
 
 
+def get_method(name):
+    logger.debug("looking up method from name=%s", repr(name))
+    m = methods[name]
+    logger.debug("found method name=%s, method=%s", m.name, repr(m.method))
+    return m
+
+
 def get_password_loop(verify=True, allow_empty=False):
     """ Password input loop. """
     while True:
@@ -203,33 +210,43 @@ def main(inargs=None):
     cli_utils.setup_logging(args.verbosity)
 
     if args.list_methods:
+        logger.debug("listing all supported methods")
         for m in supported_methods:
             print(m.name)
         raise SystemExit()
 
     if args.list_params:
+        logger.debug("listing all known params")
         params = {p for m in supported_methods for p in m.settings}
         for param in sorted(params):
             print(param)
         raise SystemExit()
 
     if args.list_all:
+        logger.debug("listing all known methods")
         output_columns(iter(methods.values()))
         raise SystemExit()
 
     if args.show_params:
-        m = methods[args.show_params]
+        logger.debug("showing params for %s", repr(args.show_params))
+        m = get_method(args.show_params)
         for param in sorted(m.settings):
             print(param)
         raise SystemExit()
 
     if args.show_docstring:
-        m = methods[args.show_docstring]
-        help(m.method)
+        logger.debug("showing docstring for %s", repr(args.show_docstring))
+        m = get_method(args.show_docstring)
+        try:
+            help(m.method)
+        except Exception:
+            logger.warning("help() failed", exc_info=True)
+            print(m.method.__doc__)
         raise SystemExit()
 
+    logger.debug("generate using %s", repr(args.method))
     params = dict(args.params)
-    method = methods[args.method]
+    method = get_method(args.method)
 
     if method.require_user and 'user' not in params:
         raise ValueError(
