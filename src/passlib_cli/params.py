@@ -39,30 +39,37 @@ def parse_parameter(parameter, value):
 @param('salt_len')
 @param('salt_size')
 @param('time_cost')
-def _posint(input_value):
+def _int(input_value):
+    """ integer param. """
     return int(input_value)
 
 
 @param('truncate_error')
 def _bool(input_value):
-    try:
-        # key=1, key=0
-        return bool(int(input_value))
-    except ValueError:
-        pass
-    # key=no, key=false
-    if str(input_value).lower().startswith('n'):
+    """
+    Boolean input value.
+
+    Values are case-insensitive:
+
+    - True: 1, y, yes, true
+    - False: 0, n, no, false, empty value
+    """
+    value = input_value.strip().lower()
+    if not value:
         return False
-    if str(input_value).lower() == 'false':
+    if value in ('n', 'no', 'false', '0'):
         return False
-    # key='' key=anything_else
-    return bool(input_value)
+    if value in ('y', 'yes', 'true', '1'):
+        return True
+
+    raise ValueError("invalid boolean value: " + repr(input_value))
 
 
 @param('algs')
-@param('salt')
-@param('marker')
-@param('variant')
 @param('ident')
+@param('marker')
+@param('salt')
+@param('variant')
 def _unmodified(input_value):
+    """ raw string param. """
     return input_value
