@@ -1,7 +1,6 @@
 # passlib-cli
 
-CLI-utils to simplify access to passlib crypt methods. It is glued together
-with twigs and scotch tape.
+CLI utils to simplify access to passlib crypt methods.
 
 
 ## passlib-mkpasswd
@@ -17,12 +16,22 @@ cryptstring, e.g.
 ``$2a$12$VJ8.82W/yr9acK5.i5774Ovmvme6sEanXnfbf3JWYPfVegvX4kzR.``
 
 
-## passlib-autocomplate
+## passlib-autocomplete
 
 Generates autocomplete script for *bash*:
 
 ```bash
 source <(passlib-autocomplete)
+```
+
+
+## passlib-pwgen
+
+Generates passwords or passphrases using `passlib.pwd`, e.g.:
+
+```bash
+passlib-pwgen --random --length 16
+passlib-pwgen --phrase --entropy 50
 ```
 
 
