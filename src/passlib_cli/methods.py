@@ -8,21 +8,12 @@ from __future__ import (
 )
 import logging
 from collections import OrderedDict
-from distutils.version import LooseVersion
 
-import passlib
 from passlib.ifc import PasswordHash
 from passlib.registry import list_crypt_handlers, get_crypt_handler
 from passlib.utils.handlers import HasUserContext, PrefixWrapper
 
 logger = logging.getLogger(__name__)
-
-
-# Use the 'hash' or the 'encrypt' method of passlib.ifc.PasswordHash?
-if LooseVersion(passlib.__version__) >= '1.7.0':
-    PASSLIB_HASH_NAME = 'hash'
-else:
-    PASSLIB_HASH_NAME = 'encrypt'
 
 
 def requires_password(method):
@@ -51,7 +42,7 @@ def is_supported(method):
     """
     if hasattr(method, 'has_backend'):
         return method.has_backend()
-    return hasattr(method, PASSLIB_HASH_NAME)
+    return hasattr(method, "hash")
 
 
 def requires_user(method):
@@ -109,7 +100,7 @@ def make_hash(method, password, **params):
     :return str:
         Return the hash cryptstring.
     """
-    return getattr(method, PASSLIB_HASH_NAME)(password, **params)
+    return getattr(method, "hash")(password, **params)
 
 
 class MethodWrapper(object):
